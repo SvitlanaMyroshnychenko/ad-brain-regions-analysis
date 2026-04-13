@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AD Regional Analysis — EC, HC, PFC</title>
+  <style>
+    :root{
+      --bg:#f6f8fb;
+      --panel:#ffffff;
+      --panel-soft:#fbfcfe;
+      --text:#16202a;
+      --muted:#5f6b7a;
+      --line:#dde5ef;
+      --accent:#2563eb;
+      --ec:#0f766e;
+      --hc:#be123c;
+      --pfc:#4f46e5;
+      --shadow:0 8px 24px rgba(15,23,42,.05);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    a{color:inherit}
+    .nav{
+      position:sticky;top:0;z-index:50;
+      background:rgba(246,248,251,.9);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .nav-inner,.wrap{max-width:1360px;margin:0 auto}
+    .nav-inner{display:flex;gap:10px;flex-wrap:wrap;padding:12px 20px}
+    .nav a{
+      text-decoration:none;
+      font-size:14px;
+      padding:8px 12px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:999px;
+    }
+    .wrap{padding:24px 20px 56px}
+    .hero{
+      background:linear-gradient(180deg,#ffffff 0%, #fbfdff 100%);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      padding:28px;
+      margin-bottom:20px;
+    }
+    .eyebrow{
+      font-size:12px;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:10px;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:42px;
+      line-height:1.05;
+      letter-spacing:-.03em;
+    }
+    .hero p{
+      margin:0;
+      max-width:960px;
+      color:var(--muted);
+      font-size:17px;
+    }
+    .overview{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:16px;
+      margin-bottom:20px;
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    .mini-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+      margin-top:14px;
+    }
+    .mini{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      background:var(--panel-soft);
+    }
+    .mini h4{margin:0 0 6px;font-size:14px}
+    .mini p{margin:0;color:var(--muted);font-size:13px}
+    .summary{
+      font-size:14px;
+      color:var(--muted);
+    }
+    .region{
+      margin-top:22px;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+    .region-head{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      align-items:flex-start;
+      padding:20px 22px;
+      border-bottom:1px solid var(--line);
+      background:#fff;
+    }
+    .region-title{
+      display:flex;gap:12px;align-items:flex-start;
+    }
+    .dot{
+      width:12px;height:12px;border-radius:999px;margin-top:8px;flex:none;
+    }
+    h2{margin:0;font-size:30px;letter-spacing:-.02em}
+    .region-sub{color:var(--muted);margin-top:4px}
+    .badge{
+      border:1px solid var(--line);
+      padding:5px 9px;
+      border-radius:999px;
+      font-size:12px;
+      color:var(--muted);
+      background:var(--panel-soft);
+      white-space:nowrap;
+    }
+    .region-body{padding:18px}
+    .step{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      background:#fff;
+      margin-bottom:14px;
+    }
+    .step-top{
+      display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px;
+    }
+    .step h3{
+      margin:0;
+      font-size:19px;
+      letter-spacing:-.01em;
+    }
+    .step p.lead{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .grid2,.grid3,.grid4{
+      display:grid;
+      gap:14px;
+    }
+    .grid2{grid-template-columns:repeat(2,1fr)}
+    .grid3{grid-template-columns:repeat(3,1fr)}
+    .grid4{grid-template-columns:repeat(4,1fr)}
+    figure{margin:0}
+    img{
+      width:100%;
+      display:block;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    figcaption{
+      margin-top:7px;
+      color:var(--muted);
+      font-size:12.5px;
+    }
+    .callout{
+      margin-top:12px;
+      border:1px dashed var(--line);
+      border-radius:14px;
+      background:#f8fbff;
+      padding:12px 14px;
+      font-size:14px;
+    }
+    .callout b{color:var(--text)}
+    .compare table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+    }
+    .compare th,.compare td{
+      text-align:left;
+      padding:11px 12px;
+      border-bottom:1px solid var(--line);
+      vertical-align:top;
+    }
+    .compare th{
+      background:#f8fbff;
+      font-weight:600;
+    }
+    .pipeline{
+      margin-top:20px;
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .pipeline-head{
+      padding:18px 22px;
+      border-bottom:1px solid var(--line);
+      background:#fff;
+    }
+    .pipeline-body{padding:18px 22px;background:#fff}
+    pre.mermaid{
+      margin:0;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fbfdff;
+      overflow:auto;
+      font-size:14px;
+    }
+    .footer{
+      margin-top:24px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    @media (max-width:1180px){
+      .overview{grid-template-columns:1fr}
+      .mini-grid{grid-template-columns:repeat(2,1fr)}
+      .grid4{grid-template-columns:repeat(2,1fr)}
+      .grid3{grid-template-columns:1fr}
+      .grid2{grid-template-columns:1fr}
+    }
+    @media (max-width:720px){
+      .wrap{padding:14px 12px 40px}
+      .nav-inner{padding:10px 12px}
+      h1{font-size:34px}
+      .hero{padding:20px}
+      .region-head{flex-direction:column}
+      .mini-grid{grid-template-columns:1fr}
+      .grid4{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#project">Project</a>
+      <a href="#hypothesis">Hypothesis</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#ec">EC</a>
+      <a href="#hc">HC</a>
+      <a href="#pfc">PFC</a>
+      <a href="#comparison">Comparison</a>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section id="project" class="hero">
+      <div class="eyebrow">Chalmers internship project · regional single-cell AD analysis</div>
+      <h1>Alzheimer’s disease across EC, HC, and PFC</h1>
+      <p>
+        A comparative project testing whether disease progression is organized as a continuous transcriptional trajectory
+        or as a set of discrete disease-associated states. The dashboard below follows the full pipeline from regional preprocessing
+        to topology, disease mapping, structure validation, candidate drivers, gene programs, and module scoring.
+      </p>
+    </section>
+
+    <section class="overview">
+      <div class="card" id="hypothesis">
+        <h3 style="margin:0 0 8px;font-size:22px">Initial hypothesis → tested → revised model</h3>
+        <p class="summary">
+          <b>Initial hypothesis:</b> Alzheimer’s disease may develop through transcriptional trajectories, either globally across each region
+          or locally within region-specific branches and cell-type compartments.
+        </p>
+        <div class="mini-grid">
+          <div class="mini">
+            <h4>What we tested</h4>
+            <p>UMAP, PAGA, DPT pseudotime, root sensitivity, CellRank, state-based mapping, drivers, and gene programs.</p>
+          </div>
+          <div class="mini">
+            <h4>Why the trajectory model weakened</h4>
+            <p>Pseudotime was root-dependent, Braak did not align consistently with ordering, PAGA was branching/fragmented, and CellRank did not reveal robust directed progression.</p>
+          </div>
+          <div class="mini">
+            <h4>What the data support instead</h4>
+            <p>Discrete disease-associated states with region-specific topology, cell-type composition, and molecular programs.</p>
+          </div>
+          <div class="mini">
+            <h4>Final model</h4>
+            <p>AD is not one universal trajectory. Each region balances ordered structure, local state transitions, and distinct molecular programs differently.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin:0 0 8px;font-size:22px">Cross-region snapshot</h3>
+        <div class="mini-grid" style="grid-template-columns:1fr">
+          <div class="mini"><h4 style="color:var(--ec)">EC</h4><p>Most progression-like structure, but still not a robust global trajectory.</p></div>
+          <div class="mini"><h4 style="color:var(--hc)">HC</h4><p>Discrete disease states with strong excitatory-neuron-specific signal.</p></div>
+          <div class="mini"><h4 style="color:var(--pfc)">PFC</h4><p>Switch-like activation of high-pathology programs rather than gradual progression.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pipeline" class="pipeline">
+      <div class="pipeline-head">
+        <h3 style="margin:0;font-size:22px">Project pipeline</h3>
+        <p class="summary" style="margin-top:6px">Shared pipeline applied to each region before cross-region comparison.</p>
+      </div>
+      <div class="pipeline-body">
+<pre class="mermaid">flowchart TD
+
+    A[Step 0<br/>Data preprocessing per region<br/>QC / normalization / HVG / integration / PCA / harmony] --> B[Step 1<br/>Unsupervised landscape<br/>Neighbors / UMAP / Leiden / PAGA]
+
+    B --> C[Step 2<br/>Disease mapping onto graph<br/>AD fraction / Braak / cell-type composition]
+
+    C --> D[Step 3<br/>Structure validation<br/>Is there a continuous progression-like structure?]
+
+    D --> E{Step 4<br/>Choose model strategy}
+
+    E -->|State-based| F[Step 5<br/>Define disease-associated states<br/>low / intermediate / high pathology]
+    E -->|Trajectory-like| G[Step 5<br/>Define early / intermediate / late states]
+
+    F --> H1[Step 6<br/>Candidate driver genes<br/>DE between states / genes vs Braak / pathology-associated genes]
+    G --> H2[Step 6<br/>Candidate driver genes<br/>genes vs pseudotime / genes vs fate probabilities]
+
+    H1 --> I[Step 7<br/>Gene programs<br/>GO BP / Reactome / manual program definition]
+    H2 --> I
+
+    I --> J[Step 8<br/>Module scoring<br/>score_genes for each program]
+    J --> K[Step 9<br/>Post hoc interpretation with cell types<br/>shared vs cell-type-specific states]
+    K --> L[Step 10<br/>Cross-region comparison<br/>EC vs HC vs PFC]
+</pre>
+      </div>
+    </section>
+
+    <section id="ec" class="region">
+      <div class="region-head">
+        <div class="region-title">
+          <span class="dot" style="background:var(--ec)"></span>
+          <div>
+            <h2>EC — Entorhinal cortex</h2>
+            <div class="region-sub">Most ordered regional structure, but trajectory evidence remains unstable under validation.</div>
+          </div>
+        </div>
+        <div class="badge">Detailed regional report</div>
+      </div>
+      <div class="region-body">
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 1–2. Unsupervised landscape and disease mapping</h3>
+              <p class="lead">Clusters, pathology overlay, and disease-associated states on the regional manifold.</p>
+            </div>
+            <div class="badge">UMAP · pathology</div>
+          </div>
+          <div class="grid3">
+            <figure><img src="assets/EC_umap_clusters.png" alt="EC UMAP clusters"><figcaption>Regional cluster structure.</figcaption></figure>
+            <figure><img src="assets/EC_umap_pathology.png" alt="EC UMAP pathology"><figcaption>AD/Braak overlay across EC.</figcaption></figure>
+            <figure><img src="assets/EC_disease_associated_states.png" alt="EC disease states"><figcaption>Low / intermediate / high pathology states.</figcaption></figure>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 3–4. Structure validation and model choice</h3>
+              <p class="lead">PAGA, DPT branch testing, and CellRank were used to assess whether EC supports a continuous trajectory.</p>
+            </div>
+            <div class="badge">PAGA · DPT · CellRank</div>
+          </div>
+          <div class="grid2">
+            <figure><img src="assets/EC_paga.png" alt="EC PAGA"><figcaption>PAGA topology across EC states.</figcaption></figure>
+            <figure><img src="assets/EC_trajectory_test_dpt_branch.png" alt="EC DPT branch"><figcaption>DPT branch check against pathology.</figcaption></figure>
+          </div>
+          <div class="grid3" style="margin-top:14px">
+            <figure><img src="assets/EC_trajectory_cellrank_distribution.png" alt="EC CellRank distribution"><figcaption>CellRank fate distribution across Braak.</figcaption></figure>
+            <figure><img src="assets/EC_trajectory_cellrank_high.png" alt="EC CellRank high"><figcaption>High-pathology fate field.</figcaption></figure>
+            <figure><img src="assets/EC_trajectory_test_root12.png" alt="EC root sensitivity"><figcaption>Root sensitivity example.</figcaption></figure>
+          </div>
+          <div class="callout"><b>EC conclusion:</b> EC preserves the most progression-like structure of the three regions, but the trajectory hypothesis is still weakened by root sensitivity and incomplete alignment with pathology.</div>
+        </div>
+
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 5–7. Disease states, drivers, and cell-type interpretation</h3>
+              <p class="lead">State definition was followed by candidate driver analysis and post hoc cell-type interpretation.</p>
+            </div>
+            <div class="badge">states · drivers</div>
+          </div>
+          <div class="grid2">
+            <figure><img src="assets/EC_celltype_composition.png" alt="EC celltype composition"><figcaption>Cell-type composition across disease states.</figcaption></figure>
+            <figure><img src="assets/EC_drivers_core_umap.png" alt="EC drivers UMAP"><figcaption>Representative EC candidate drivers on UMAP.</figcaption></figure>
+          </div>
+          <div class="grid3" style="margin-top:14px">
+            <figure><img src="assets/EC_drivers_core_dotplot.png" alt="EC core dotplot"><figcaption>Core driver-gene dotplot.</figcaption></figure>
+            <figure><img src="assets/EC_drivers_violin.png" alt="EC driver violin"><figcaption>Driver score distributions across states.</figcaption></figure>
+            <figure><img src="assets/EC_program_GO.png" alt="EC GO"><figcaption>Functional enrichment of EC pathology-associated genes.</figcaption></figure>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 9–10. Gene programs and module scoring</h3>
+              <p class="lead">Gene programs were defined from enrichment and visualized by module scoring.</p>
+            </div>
+            <div class="badge">programs · score_genes</div>
+          </div>
+          <div class="grid3">
+            <figure><img src="assets/EC_program_module_scores.png" alt="EC module scores"><figcaption>Mean module scores across states.</figcaption></figure>
+            <figure><img src="assets/EC_program_umap.png" alt="EC program UMAP"><figcaption>Program localization on UMAP.</figcaption></figure>
+            <figure><img src="assets/EC_program_violin.png" alt="EC program violin"><figcaption>Program-score distributions across states.</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hc" class="region">
+      <div class="region-head">
+        <div class="region-title">
+          <span class="dot" style="background:var(--hc)"></span>
+          <div>
+            <h2>HC — Hippocampus</h2>
+            <div class="region-sub">Discrete state architecture with strong excitatory-neuron-specific disease signal.</div>
+          </div>
+        </div>
+        <div class="badge">Detailed regional report</div>
+      </div>
+      <div class="region-body">
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 1–2. Unsupervised landscape and disease mapping</h3>
+              <p class="lead">HC shows heterogeneous disease localization across multiple transcriptional islands.</p>
+            </div>
+            <div class="badge">UMAP · pathology</div>
+          </div>
+          <div class="grid3">
+            <figure><img src="assets/HC_umap_clusters.png" alt="HC clusters"><figcaption>Regional cluster structure.</figcaption></figure>
+            <figure><img src="assets/HC_umap_pathology.png" alt="HC pathology"><figcaption>AD/Braak overlay across HC.</figcaption></figure>
+            <figure><img src="assets/HC_disease_associated_states.png" alt="HC disease states"><figcaption>HC disease-associated states are spatially discrete.</figcaption></figure>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 3–4. Structure validation and model choice</h3>
+              <p class="lead">HC was repeatedly re-checked with multiple roots and local branches to test the trajectory hypothesis.</p>
+            </div>
+            <div class="badge">strong falsification block</div>
+          </div>
+          <div class="grid2">
+            <figure><img src="assets/HC_paga.png" alt="HC PAGA"><figcaption>PAGA topology: branch-like and fragmented.</figcaption></figure>
+            <figure><img src="assets/HC_trajectory_branch4.png" alt="HC branch"><figcaption>Local branch test within HC.</figcaption></figure>
+          </div>
+          <div class="grid4" style="margin-top:14px">
+            <figure><img src="assets/HC_trajectory_dpt_root10.png" alt="HC root 10"><figcaption>DPT with root 10.</figcaption></figure>
+            <figure><img src="assets/HC_trajectory_dpt_root23.png" alt="HC root 23"><figcaption>DPT with root 23.</figcaption></figure>
+            <figure><img src="assets/HC_trajectory_dpt_branch.png" alt="HC branch dpt"><figcaption>Branch DPT against pathology.</figcaption></figure>
+            <figure><img src="assets/HC_trajectory_exc_desease_states.png" alt="HC exc states"><figcaption>Exc-specific disease-state structure.</figcaption></figure>
+          </div>
+          <div class="callout"><b>HC conclusion:</b> Neither global nor local analyses support one stable trajectory. HC is best interpreted through discrete states and localized excitatory-neuron dynamics.</div>
+        </div>
+
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 5–7. Disease states, drivers, and cell-type interpretation</h3>
+              <p class="lead">Driver analysis was performed globally and then refined in excitatory neurons to separate composition effects from state-specific signal.</p>
+            </div>
+            <div class="badge">global + Exc-specific</div>
+          </div>
+          <div class="grid2">
+            <figure><img src="assets/HC_cell_type_composition.png" alt="HC celltype composition"><figcaption>Cell-type composition across HC disease states.</figcaption></figure>
+            <figure><img src="assets/HC_trajectory_exc_core_genes_umap.png" alt="HC Exc genes"><figcaption>Exc-specific candidate drivers on UMAP.</figcaption></figure>
+          </div>
+          <div class="grid3" style="margin-top:14px">
+            <figure><img src="assets/HC_drivers_global_high_low.png" alt="HC global drivers"><figcaption>Global high vs low pathology drivers.</figcaption></figure>
+            <figure><img src="assets/HC_drivers_exc_de_high_low_dotplot.png" alt="HC Exc dotplot"><figcaption>Exc-specific high vs low pathology dotplot.</figcaption></figure>
+            <figure><img src="assets/HC_drivers_high_low_heatmap.png" alt="HC driver heatmap"><figcaption>HC driver heatmap across disease states.</figcaption></figure>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 9–10. Gene programs and module scoring</h3>
+              <p class="lead">HC programs emphasize synaptic remodeling, axon guidance, and stress responses, especially within excitatory cells.</p>
+            </div>
+            <div class="badge">Exc-focused programs</div>
+          </div>
+          <div class="grid3">
+            <figure><img src="assets/HC_program_module_scores.png" alt="HC module scores"><figcaption>Mean module scores across disease states.</figcaption></figure>
+            <figure><img src="assets/HC_program_umap.png" alt="HC program umap"><figcaption>Program localization on HC UMAP.</figcaption></figure>
+            <figure><img src="assets/HC_program_violin.png" alt="HC program violin"><figcaption>Program-score distributions by disease state.</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pfc" class="region">
+      <div class="region-head">
+        <div class="region-title">
+          <span class="dot" style="background:var(--pfc)"></span>
+          <div>
+            <h2>PFC — Prefrontal cortex</h2>
+            <div class="region-sub">Switch-like disease activation with strong high-pathology program engagement.</div>
+          </div>
+        </div>
+        <div class="badge">Detailed regional report</div>
+      </div>
+      <div class="region-body">
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 1–2. Unsupervised landscape and disease mapping</h3>
+              <p class="lead">PFC displays clear island-like topology, with pathology occupying discrete transcriptional regions.</p>
+            </div>
+            <div class="badge">island-like manifold</div>
+          </div>
+          <div class="grid3">
+            <figure><img src="assets/PFC_umap_clusters.png" alt="PFC clusters"><figcaption>Regional cluster structure.</figcaption></figure>
+            <figure><img src="assets/PFC_umap_pathology.png" alt="PFC pathology"><figcaption>AD/Braak overlay across PFC.</figcaption></figure>
+            <figure><img src="assets/PFC_disease_associated_states.png" alt="PFC disease states"><figcaption>Low / intermediate / high pathology states.</figcaption></figure>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 3–4. Structure validation and model choice</h3>
+              <p class="lead">CellRank and topology checks were used as negative tests for a trajectory model.</p>
+            </div>
+            <div class="badge">CellRank negative control</div>
+          </div>
+          <div class="grid2">
+            <figure><img src="assets/PFC_paga.png" alt="PFC PAGA"><figcaption>PFC PAGA topology under pathology mapping.</figcaption></figure>
+            <figure><img src="assets/PFC_trajectory_cellrank_distribution.png" alt="PFC CellRank distribution"><figcaption>Fate-probability distribution across pathology.</figcaption></figure>
+          </div>
+          <div class="grid2" style="margin-top:14px">
+            <figure><img src="assets/PFC_trajectory_cellrank_high.png" alt="PFC CellRank high"><figcaption>High-pathology fate map.</figcaption></figure>
+            <figure><img src="assets/PFC_trajectory_cellrank_low.png" alt="PFC CellRank low"><figcaption>Low-pathology fate map.</figcaption></figure>
+          </div>
+          <div class="callout"><b>PFC conclusion:</b> PFC does not support directed progression. The dominant pattern is a switch-like activation of high-pathology states and programs.</div>
+        </div>
+
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 5–7. Disease states, drivers, and cell-type interpretation</h3>
+              <p class="lead">High pathology in PFC is characterized by sharply activated genes and distinct cell-type composition shifts.</p>
+            </div>
+            <div class="badge">state-specific drivers</div>
+          </div>
+          <div class="grid2">
+            <figure><img src="assets/PFC_cell_type_composition.png" alt="PFC celltype composition"><figcaption>Cell-type composition across PFC disease states.</figcaption></figure>
+            <figure><img src="assets/PFC_disease_state_braak.png" alt="PFC state braak"><figcaption>Disease-state and Braak summary panel.</figcaption></figure>
+          </div>
+          <div class="grid3" style="margin-top:14px">
+            <figure><img src="assets/PFC_drivers_high_low_dotplot.png" alt="PFC dotplot"><figcaption>Genes upregulated in high pathology.</figcaption></figure>
+            <figure><img src="assets/PFC_drivers_core_genes_heatmap.png" alt="PFC heatmap"><figcaption>Core pathology-associated gene heatmap.</figcaption></figure>
+            <figure><img src="assets/PFC_drivers_violin.png" alt="PFC driver violin"><figcaption>Representative gene distributions across states.</figcaption></figure>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 9–10. Gene programs and module scoring</h3>
+              <p class="lead">PFC programs strongly emphasize myelination, axon-related processes, migration, and signaling in high pathology.</p>
+            </div>
+            <div class="badge">switch-like programs</div>
+          </div>
+          <div class="grid3">
+            <figure><img src="assets/PFC_program_GO.png" alt="PFC GO"><figcaption>GO enrichment of high-pathology genes.</figcaption></figure>
+            <figure><img src="assets/PFC_program_module_scores.png" alt="PFC module scores"><figcaption>Module-score heatmap across disease states.</figcaption></figure>
+            <figure><img src="assets/PFC_program_score_umap.png" alt="PFC program umap"><figcaption>Program localization on PFC UMAP.</figcaption></figure>
+          </div>
+          <div class="grid2" style="margin-top:14px">
+            <figure><img src="assets/PFC_program_violin.png" alt="PFC program violin"><figcaption>Program-score distributions across disease states.</figcaption></figure>
+            <figure><img src="assets/PFC_drivers_high_low.png" alt="PFC high low"><figcaption>Global high vs low pathology driver summary.</figcaption></figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="comparison" class="region compare">
+      <div class="region-head">
+        <div class="region-title">
+          <span class="dot" style="background:var(--accent)"></span>
+          <div>
+            <h2>Cross-region comparison</h2>
+            <div class="region-sub">A single framework to compare topology, states, drivers, and programs across EC, HC, and PFC.</div>
+          </div>
+        </div>
+        <div class="badge">Final synthesis</div>
+      </div>
+      <div class="region-body">
+        <div class="step" style="margin-bottom:0">
+          <div class="step-top">
+            <div>
+              <h3>Regional synthesis</h3>
+              <p class="lead">The same pipeline was applied to each region, enabling direct conceptual comparison.</p>
+            </div>
+            <div class="badge">EC vs HC vs PFC</div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>EC</th>
+                <th>HC</th>
+                <th>PFC</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Topology</b></td>
+                <td>Most ordered of the three</td>
+                <td>Fragmented / branch-like</td>
+                <td>Island-like and discrete</td>
+              </tr>
+              <tr>
+                <td><b>Trajectory support</b></td>
+                <td>Partial but unstable</td>
+                <td>Weak</td>
+                <td>Weak</td>
+              </tr>
+              <tr>
+                <td><b>Preferred model</b></td>
+                <td>Hybrid, leaning state-based</td>
+                <td>State-based</td>
+                <td>State-based</td>
+              </tr>
+              <tr>
+                <td><b>Disease-state logic</b></td>
+                <td>Structured disease-associated regions</td>
+                <td>Localized states with strong Exc component</td>
+                <td>Switch-like high-pathology state</td>
+              </tr>
+              <tr>
+                <td><b>Candidate drivers</b></td>
+                <td>Core pathology-associated genes</td>
+                <td>Global + Exc-specific drivers</td>
+                <td>Discrete high-pathology genes</td>
+              </tr>
+              <tr>
+                <td><b>Programs</b></td>
+                <td>Stress / migration / myelin</td>
+                <td>Synaptic / axon / stress</td>
+                <td>Myelin / migration / axon / signaling</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="callout" style="margin-top:14px">
+            <b>Final project conclusion:</b> the original hypothesis that AD develops through global or local transcriptional trajectories was not supported.
+            Instead, the data consistently support <b>region-specific, discrete disease-associated states</b>, each with characteristic cell-type composition
+            and molecular programs.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      GitHub Pages note: put this file at repository root as <b>index.html</b>, keep all images inside <b>assets/</b>, then enable Pages in repository settings.
+      You can edit the page later by changing the HTML text, replacing images in <b>assets/</b>, or editing directly on GitHub.
+    </div>
+  </main>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { primaryColor: '#f8fbff', primaryBorderColor:'#dde5ef', primaryTextColor:'#16202a', lineColor:'#7f8ea3', fontFamily:'Inter, system-ui, sans-serif' }});
+  </script>
+</body>
+</html>
