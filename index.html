@@ -217,15 +217,6 @@
       background:#fff;
     }
     .pipeline-body{padding:18px 22px;background:#fff}
-    pre.mermaid{
-      margin:0;
-      padding:14px;
-      border:1px solid var(--line);
-      border-radius:16px;
-      background:#fbfdff;
-      overflow:auto;
-      font-size:14px;
-    }
     .footer{
       margin-top:24px;
       color:var(--muted);
@@ -254,6 +245,7 @@
     <div class="nav-inner">
       <a href="#project">Project</a>
       <a href="#hypothesis">Hypothesis</a>
+      <a href="#methods-note">Trajectory checks</a>
       <a href="#pipeline">Pipeline</a>
       <a href="#ec">EC</a>
       <a href="#hc">HC</a>
@@ -264,12 +256,12 @@
 
   <main class="wrap">
     <section id="project" class="hero">
-      <div class="eyebrow">Chalmers internship project · regional single-cell AD analysis</div>
-      <h1>Alzheimer’s disease across EC, HC, and PFC</h1>
+      <div class="eyebrow">Regional single-cell transcriptomic AD analysis</div>
+      <h1>Alzheimer’s disease across EC, HC and PFC</h1>
       <p>
-        A comparative project testing whether disease progression is organized as a continuous transcriptional trajectory
+        A comparative project testing whether AD progression is organized as a continuous transcriptional trajectory
         or as a set of discrete disease-associated states. The dashboard below follows the full pipeline from regional preprocessing
-        to topology, disease mapping, structure validation, candidate drivers, gene programs, and module scoring.
+        to topology, disease mapping, structure validation, candidate drivers, gene programs and module scoring.
       </p>
     </section>
 
@@ -277,25 +269,24 @@
       <div class="card" id="hypothesis">
         <h3 style="margin:0 0 8px;font-size:22px">Initial hypothesis → tested → revised model</h3>
         <p class="summary">
-          <b>Initial hypothesis:</b> Alzheimer’s disease may develop through transcriptional trajectories, either globally across each region
-          or locally within region-specific branches and cell-type compartments.
+          <b>Initial hypothesis:</b> AD progression can be represented as a continuous trajectory in transcriptional space, either globally or within region-specific branches.
         </p>
         <div class="mini-grid">
           <div class="mini">
             <h4>What we tested</h4>
-            <p>UMAP, PAGA, DPT pseudotime, root sensitivity, CellRank, state-based mapping, drivers, and gene programs.</p>
+            <p>UMAP, PAGA, DPT pseudotime, root sensitivity, CellRank, state-based mapping, drivers and gene programs.</p>
           </div>
           <div class="mini">
             <h4>Why the trajectory model weakened</h4>
-            <p>Pseudotime was root-dependent, Braak did not align consistently with ordering, PAGA was branching/fragmented, and CellRank did not reveal robust directed progression.</p>
+            <p>Pseudotime was root-dependent, Braak did not align consistently with ordering, PAGA was branching or fragmented, and CellRank did not reveal robust directed progression.</p>
           </div>
           <div class="mini">
             <h4>What the data support instead</h4>
-            <p>Discrete disease-associated states with region-specific topology, cell-type composition, and molecular programs.</p>
+            <p>Discrete disease-associated states with region-specific topology, cell-type composition and molecular programs.</p>
           </div>
           <div class="mini">
             <h4>Final model</h4>
-            <p>AD is not one universal trajectory. Each region balances ordered structure, local state transitions, and distinct molecular programs differently.</p>
+            <p>AD is not one universal trajectory. Each region balances ordered structure, local state transitions and distinct molecular programs differently.</p>
           </div>
         </div>
       </div>
@@ -305,40 +296,110 @@
         <div class="mini-grid" style="grid-template-columns:1fr">
           <div class="mini"><h4 style="color:var(--ec)">EC</h4><p>Most progression-like structure, but still not a robust global trajectory.</p></div>
           <div class="mini"><h4 style="color:var(--hc)">HC</h4><p>Discrete disease states with strong excitatory-neuron-specific signal.</p></div>
-          <div class="mini"><h4 style="color:var(--pfc)">PFC</h4><p>Switch-like activation of high-pathology programs rather than gradual progression.</p></div>
+          <div class="mini"><h4 style="color:var(--pfc)">PFC</h4><p>Localized activation of high-pathology programs without evidence of gradual progression.</p></div>
         </div>
+      </div>
+    </section>
+
+    <section id="methods-note" class="card" style="margin-bottom:20px;">
+      <h3 style="margin:0 0 10px;font-size:22px">How DPT pseudotime and CellRank were interpreted</h3>
+      <p class="summary" style="margin-bottom:12px;">
+        Two complementary methods were used to test whether AD-related transcriptional changes form a continuous progression-like structure.
+      </p>
+
+      <div class="grid2">
+        <div class="mini" style="background:#fff;">
+          <h4>DPT pseudotime</h4>
+          <p>
+            Diffusion pseudotime (DPT) orders cells along a neighborhood graph starting from a chosen root cell or root cluster. It is computed from diffusion distances on the graph and asks whether cells can be arranged along a continuous transcriptional path.
+          </p>
+          <p style="margin-top:8px;">
+            In a true trajectory-like system, pseudotime should remain relatively stable across reasonable root choices and should align with pathology measures such as Braak stage. In this project, pseudotime was often root-dependent and did not consistently match pathology, arguing against a robust continuous trajectory.
+          </p>
+        </div>
+
+        <div class="mini" style="background:#fff;">
+          <h4>CellRank fate probabilities</h4>
+          <p>
+            CellRank estimates transition tendencies on the cell-state graph and computes the probability that each cell will end in predefined terminal states, such as low-pathology or high-pathology states.
+          </p>
+          <p style="margin-top:8px;">
+            If disease progression followed a strong directed trajectory, fate probabilities would form a coherent gradient toward pathological terminal states. Instead, our results showed locally distributed or weak fate biases without a stable global direction, supporting a state-based rather than trajectory-based interpretation.
+          </p>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:14px">
+        <b>Interpretation rule used throughout the dashboard:</b> a continuous trajectory would require consistent ordering, stable directionality, and alignment with pathology. Local gradients or local fate biases alone were not considered sufficient evidence for a true disease trajectory.
       </div>
     </section>
 
     <section id="pipeline" class="pipeline">
       <div class="pipeline-head">
         <h3 style="margin:0;font-size:22px">Project pipeline</h3>
-        <p class="summary" style="margin-top:6px">Shared pipeline applied to each region before cross-region comparison.</p>
+        <p class="summary" style="margin-top:6px">
+          Shared pipeline applied to each region before cross-region comparison.
+        </p>
       </div>
-      <div class="pipeline-body">
-<pre class="mermaid">flowchart TD
 
-    A[Step 0<br/>Data preprocessing per region<br/>QC / normalization / HVG / integration / PCA / harmony] --> B[Step 1<br/>Unsupervised landscape<br/>Neighbors / UMAP / Leiden / PAGA]
+      <div class="pipeline-body" style="padding:24px 28px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:32px;">
 
-    B --> C[Step 2<br/>Disease mapping onto graph<br/>AD fraction / Braak / cell-type composition]
+          <div>
+            <div style="margin-bottom:18px;">
+              <b>Step 0.</b> Data preprocessing per region
+            </div>
 
-    C --> D[Step 3<br/>Structure validation<br/>Is there a continuous progression-like structure?]
+            <div style="margin-bottom:18px;">
+              <b>Step 1.</b> Unsupervised landscape
+            </div>
 
-    D --> E{Step 4<br/>Choose model strategy}
+            <div style="margin-bottom:18px;">
+              <b>Step 2.</b> Disease mapping onto graph
+            </div>
 
-    E -->|State-based| F[Step 5<br/>Define disease-associated states<br/>low / intermediate / high pathology]
-    E -->|Trajectory-like| G[Step 5<br/>Define early / intermediate / late states]
+            <div style="margin-bottom:18px;">
+              <b>Step 3.</b> Structure validation<br>
+              <span style="color:#555;">Is there a continuous progression-like structure?</span>
+            </div>
 
-    F --> H1[Step 6<br/>Candidate driver genes<br/>DE between states / genes vs Braak / pathology-associated genes]
-    G --> H2[Step 6<br/>Candidate driver genes<br/>genes vs pseudotime / genes vs fate probabilities]
+            <div style="margin-bottom:18px;">
+              <b>Step 4.</b> Choose model strategy<br>
+              <span style="color:#555;">Trajectory-like vs State-based</span>
+            </div>
 
-    H1 --> I[Step 7<br/>Gene programs<br/>GO BP / Reactome / manual program definition]
-    H2 --> I
+            <div>
+              <b>Step 5.</b> Define disease-associated states<br>
+              <span style="color:#555;">low / intermediate / high pathology</span>
+            </div>
+          </div>
 
-    I --> J[Step 8<br/>Module scoring<br/>score_genes for each program]
-    J --> K[Step 9<br/>Post hoc interpretation with cell types<br/>shared vs cell-type-specific states]
-    K --> L[Step 10<br/>Cross-region comparison<br/>EC vs HC vs PFC]
-</pre>
+          <div>
+            <div style="margin-bottom:18px;">
+              <b>Step 6.</b> Candidate driver genes
+            </div>
+
+            <div style="margin-bottom:18px;">
+              <b>Step 7.</b> Post hoc interpretation with cell types<br>
+              <span style="color:#555;">shared vs cell-type-specific states</span>
+            </div>
+
+            <div style="margin-bottom:18px;">
+              <b>Step 8.</b> CellRank / DPT pseudotime check (optional)
+            </div>
+
+            <div style="margin-bottom:18px;">
+              <b>Step 9.</b> Gene programs<br>
+              <span style="color:#555;">GO BP / Reactome / manual programs</span>
+            </div>
+
+            <div>
+              <b>Step 10.</b> Module scoring<br>
+              <span style="color:#555;">score_genes</span>
+            </div>
+          </div>
+
+        </div>
       </div>
     </section>
 
@@ -353,75 +414,211 @@
         </div>
         <div class="badge">Detailed regional report</div>
       </div>
+
       <div class="region-body">
+
         <div class="step">
           <div class="step-top">
             <div>
-              <h3>Step 1–2. Unsupervised landscape and disease mapping</h3>
-              <p class="lead">Clusters, pathology overlay, and disease-associated states on the regional manifold.</p>
+              <h3>Step 1–2. Unsupervised Landscape and Disease Mapping</h3>
+              <p class="lead">Clusters, pathology overlay, disease-associated states on the regional manifold, PAGA.</p>
+              <p>
+                Unsupervised analysis of the entorhinal cortex reveals a well-structured transcriptional landscape with multiple distinct clusters. Mapping pathology onto this space highlights heterogeneous distributions of low, intermediate, and high pathology states across the manifold. PAGA topology captures partial connectivity between clusters, suggesting locally coherent transitions while preserving a fragmented global structure. Pathology signals appear unevenly distributed across connected components, without a clear monotonic pattern across the graph. Local patterns suggest potential relationships between clusters and disease burden, motivating further analysis of global organization and progression structure.
+              </p>
             </div>
-            <div class="badge">UMAP · pathology</div>
+            <div class="badge">UMAP · PAGA · pathology</div>
           </div>
-          <div class="grid3">
-            <figure><img src="assets/EC_umap_clusters.png" alt="EC UMAP clusters"><figcaption>Regional cluster structure.</figcaption></figure>
-            <figure><img src="assets/EC_umap_pathology.png" alt="EC UMAP pathology"><figcaption>AD/Braak overlay across EC.</figcaption></figure>
-            <figure><img src="assets/EC_disease_associated_states.png" alt="EC disease states"><figcaption>Low / intermediate / high pathology states.</figcaption></figure>
+
+          <div class="grid3" style="grid-template-columns: repeat(2, auto);">
+            <figure>
+              <img src="assets/EC_umap_clusters.png" alt="EC clusters">
+              <figcaption>Regional Cluster Structure</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/EC_disease_associated_states.png" alt="EC disease states">
+              <figcaption>Low / Intermediate / High Pathology States</figcaption>
+            </figure>
+
+            <figure style="grid-column: 1 / span 2;">
+              <img src="assets/EC_umap_pathology.png" alt="EC pathology overlay">
+              <figcaption>AD/Braak Overlay Across EC</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/EC_paga.png" alt="EC PAGA" style="width:600px;">
+              <figcaption>EC PAGA Threshold 0.15</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/EC_paga_ad_fraction.png" alt="EC PAGA AD fraction" style="width:588px;">
+              <figcaption>EC PAGA AD Fraction</figcaption>
+            </figure>
           </div>
         </div>
 
         <div class="step">
           <div class="step-top">
             <div>
-              <h3>Step 3–4. Structure validation and model choice</h3>
-              <p class="lead">PAGA, DPT branch testing, and CellRank were used to assess whether EC supports a continuous trajectory.</p>
+              <h3>Step 3–4. Structure Validation and Model Choice</h3>
+              <p class="lead">DPT root sensitivity testing and local branch testing were used to assess whether EC supports a continuous trajectory.</p>
+              <p>
+                Pseudotime analysis suggests local gradients within subsets of clusters. However, these patterns do not extend into a coherent global trajectory across the manifold. Additionally, pseudotime does not consistently align with Braak staging, indicating a lack of a unified progression axis.
+              </p>
+              <p>
+                Diffusion pseudotime (DPT) was computed using multiple candidate root clusters representing low-pathology states (clusters 10, 12, 18), as well as high-pathology controls (clusters 21, 22). Across all tested roots:<br>
+                - Spearman correlation between pseudotime and Braak stage was negligible (ρ ≈ 0).<br>
+                - No consistent monotonic relationship was observed.<br>
+                - UMAP visualization revealed local gradients without global alignment to pathology.<br>
+                Branch-specific analyses detected only weak and non-reproducible local gradients. Therefore, EC is best described using a primarily state-based framework, while acknowledging limited local continuous structure in selected subgraphs. These results suggest that EC does not exhibit a global, disease-aligned trajectory, despite maintaining a connected graph structure.
+              </p>
             </div>
-            <div class="badge">PAGA · DPT · CellRank</div>
+            <div class="badge">DPT</div>
           </div>
+
           <div class="grid2">
-            <figure><img src="assets/EC_paga.png" alt="EC PAGA"><figcaption>PAGA topology across EC states.</figcaption></figure>
-            <figure><img src="assets/EC_trajectory_test_dpt_branch.png" alt="EC DPT branch"><figcaption>DPT branch check against pathology.</figcaption></figure>
+            <figure>
+              <img src="assets/EC_trajectory_test_root10.png" alt="EC root 10">
+              <figcaption>Root Sensitivity Example (Root Cluster 10)</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/EC_trajectory_test_root18.png" alt="EC root 18">
+              <figcaption>Root Sensitivity Example (Root Cluster 18)</figcaption>
+            </figure>
           </div>
+
           <div class="grid3" style="margin-top:14px">
-            <figure><img src="assets/EC_trajectory_cellrank_distribution.png" alt="EC CellRank distribution"><figcaption>CellRank fate distribution across Braak.</figcaption></figure>
-            <figure><img src="assets/EC_trajectory_cellrank_high.png" alt="EC CellRank high"><figcaption>High-pathology fate field.</figcaption></figure>
-            <figure><img src="assets/EC_trajectory_test_root12.png" alt="EC root sensitivity"><figcaption>Root sensitivity example.</figcaption></figure>
+            <figure style="grid-column: 1 / span 2;">
+              <img src="assets/EC_trajectory_test_branch.png" alt="EC DPT local branch 1">
+              <figcaption>DPT Local Branch 10 → 15 → 3 → 21 Testing</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/EC_trajectory_test_dpt_branch.png" alt="EC DPT local branch 2">
+              <figcaption>DPT Local Branch vs. Braak</figcaption>
+            </figure>
           </div>
-          <div class="callout"><b>EC conclusion:</b> EC preserves the most progression-like structure of the three regions, but the trajectory hypothesis is still weakened by root sensitivity and incomplete alignment with pathology.</div>
         </div>
 
         <div class="step">
           <div class="step-top">
             <div>
-              <h3>Step 5–7. Disease states, drivers, and cell-type interpretation</h3>
+              <h3>Step 5–7. Disease-Associated States, Candidate Drivers and Cell-Type Interpretation</h3>
               <p class="lead">State definition was followed by candidate driver analysis and post hoc cell-type interpretation.</p>
+              <p>
+                High-pathology states: 21, 22, 20, 5, 13, 16, 15<br>
+                Low-pathology states: 18, 12, 23, 10, 9
+              </p>
             </div>
             <div class="badge">states · drivers</div>
           </div>
+
+          <figure>
+            <img src="assets/EC_trajectory_braak_ad_state.png" alt="EC Braak AD state">
+            <figcaption>Disease-Associated Signals Across the EC Manifold</figcaption>
+          </figure>
+
+          <figure>
+            <img src="assets/EC_drivers_high_low_dotplot.png" alt="EC drivers high low" style="width:850px;">
+            <figcaption>DE: High vs Low Pathology</figcaption>
+          </figure>
+
+          <figure>
+            <img src="assets/EC_drivers_core_dotplot.png" alt="EC core dotplot" style="width:450px;">
+            <figcaption>Core genes shared between high-pathology DE and Braak-associated genes (DE ∩ Braak correlation)</figcaption>
+          </figure>
+
+          <p>
+            Intersection of high-pathology DE genes with Braak-associated genes identified a small core set (ANLN, HSP90AA1, SPP1), suggesting limited overlap between state-associated and progression-related signals.
+          </p>
+
           <div class="grid2">
-            <figure><img src="assets/EC_celltype_composition.png" alt="EC celltype composition"><figcaption>Cell-type composition across disease states.</figcaption></figure>
-            <figure><img src="assets/EC_drivers_core_umap.png" alt="EC drivers UMAP"><figcaption>Representative EC candidate drivers on UMAP.</figcaption></figure>
+            <figure>
+              <img src="assets/EC_drivers_violin.png" alt="EC driver violin" style="width:600px;">
+              <figcaption>Driver score distributions across states</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/EC_drivers_core_umap.png" alt="EC drivers core UMAP" style="width:600px;">
+              <figcaption>UMAP expression of core genes shared between high-pathology DE and Braak-associated signals</figcaption>
+            </figure>
           </div>
-          <div class="grid3" style="margin-top:14px">
-            <figure><img src="assets/EC_drivers_core_dotplot.png" alt="EC core dotplot"><figcaption>Core driver-gene dotplot.</figcaption></figure>
-            <figure><img src="assets/EC_drivers_violin.png" alt="EC driver violin"><figcaption>Driver score distributions across states.</figcaption></figure>
-            <figure><img src="assets/EC_program_GO.png" alt="EC GO"><figcaption>Functional enrichment of EC pathology-associated genes.</figcaption></figure>
+
+          <figure>
+            <img src="assets/EC_celltype_composition.png" alt="EC cell-type composition" style="width:600px;">
+            <figcaption>EC cell-type composition</figcaption>
+          </figure>
+        </div>
+
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 8. CellRank Check (optional)</h3>
+              <p class="lead">CellRank was used as an additional directionality check to test whether EC supports a stable transition from low- to high-pathology states.</p>
+            </div>
+            <div class="badge">CellRank</div>
+          </div>
+
+          <div class="grid3">
+            <figure>
+              <img src="assets/EC_trajectory_cellrank_high.png" alt="EC CellRank high">
+              <figcaption>High-Pathology Fate Probability Across EC</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/EC_trajectory_cellrank_low.png" alt="EC CellRank low">
+              <figcaption>Low-Pathology Fate Probability Across EC</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/EC_trajectory_cellrank_distribution.png" alt="EC distribution" style="width:340px;">
+              <figcaption>Distribution of Fate Probabilities Across Braak Stages</figcaption>
+            </figure>
+
+            <p style="grid-column: 1 / span 3;">
+              To assess whether EC cells follow a directional progression toward pathological states, we applied CellRank using a connectivity-based transition model with low- and high-pathology states defined as terminal endpoints. Cells exhibited only a weak bias toward high-pathology states (Spearman ρ ≈ 0.21), and this bias did not translate into a coherent global gradient. Moreover, substantial overlap in fate probabilities across Braak stages indicates that pathological commitment is not aligned with a continuous trajectory. Together, these results do not support a model of linear disease progression in EC and instead suggest a distributed, state-based organization of pathology.
+            </p>
           </div>
         </div>
 
         <div class="step">
           <div class="step-top">
             <div>
-              <h3>Step 9–10. Gene programs and module scoring</h3>
+              <h3>Step 9–10. Gene Programs and Module Scoring</h3>
               <p class="lead">Gene programs were defined from enrichment and visualized by module scoring.</p>
             </div>
             <div class="badge">programs · score_genes</div>
           </div>
-          <div class="grid3">
-            <figure><img src="assets/EC_program_module_scores.png" alt="EC module scores"><figcaption>Mean module scores across states.</figcaption></figure>
-            <figure><img src="assets/EC_program_umap.png" alt="EC program UMAP"><figcaption>Program localization on UMAP.</figcaption></figure>
-            <figure><img src="assets/EC_program_violin.png" alt="EC program violin"><figcaption>Program-score distributions across states.</figcaption></figure>
+
+          <div class="grid2">
+            <figure>
+              <img src="assets/EC_program_GO.png" alt="EC program GO">
+              <figcaption>GO Enrichment of High-Pathology Upregulated Genes in EC</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/EC_program_module_scores.png" alt="EC module scores">
+              <figcaption>Mean Module Scores Across States</figcaption>
+            </figure>
+
+            <figure style="grid-column: 1 / span 2;">
+              <img src="assets/EC_program_umap.png" alt="EC program UMAP">
+              <figcaption>Program Localization on UMAP</figcaption>
+            </figure>
+
+            <figure style="grid-column: 1 / span 2;">
+              <img src="assets/EC_program_violin.png" alt="EC program violin">
+              <figcaption>Program-Score Distributions Across States</figcaption>
+            </figure>
           </div>
+
+          <p>
+            Disease progression is organized as partially independent gene programs.<br>
+            While trajectory inference methods typically assume a single coherent progression, our results indicate that disease progression is composed of multiple partially independent gene programs. These programs, including migration, stress response, and myelination, exhibit distinct and non-synchronous dynamics across pathology-associated states. Importantly, these programs do not align along a single axis, leading to a fragmented transition structure that cannot be captured by standard pseudotime or Markov-based approaches.
+          </p>
         </div>
+
       </div>
     </section>
 
@@ -436,76 +633,221 @@
         </div>
         <div class="badge">Detailed regional report</div>
       </div>
+
       <div class="region-body">
+
         <div class="step">
           <div class="step-top">
             <div>
-              <h3>Step 1–2. Unsupervised landscape and disease mapping</h3>
+              <h3>Step 1–2. Unsupervised Landscape and Disease Mapping</h3>
               <p class="lead">HC shows heterogeneous disease localization across multiple transcriptional islands.</p>
             </div>
-            <div class="badge">UMAP · pathology</div>
+            <div class="badge">UMAP · PAGA · pathology</div>
           </div>
+
           <div class="grid3">
-            <figure><img src="assets/HC_umap_clusters.png" alt="HC clusters"><figcaption>Regional cluster structure.</figcaption></figure>
-            <figure><img src="assets/HC_umap_pathology.png" alt="HC pathology"><figcaption>AD/Braak overlay across HC.</figcaption></figure>
-            <figure><img src="assets/HC_disease_associated_states.png" alt="HC disease states"><figcaption>HC disease-associated states are spatially discrete.</figcaption></figure>
+            <figure>
+              <img src="assets/HC_umap_clusters.png" alt="HC clusters">
+              <figcaption>Regional Cluster Structure</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/HC_disease_associated_states.png" alt="HC disease states">
+              <figcaption>HC Disease-Associated States Are Spatially Discrete</figcaption>
+            </figure>
+
+            <figure style="grid-column: 1 / span 3;">
+              <img src="assets/HC_umap_pathology.png" alt="HC pathology overlay">
+              <figcaption>AD/Braak Overlay Across HC</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/HC_paga.png" alt="HC PAGA" style="width:600px;">
+              <figcaption>HC PAGA Threshold 0.15</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/HC_paga_ad_fraction.png" alt="HC PAGA AD fraction" style="width:588px;">
+              <figcaption>HC PAGA AD Fraction</figcaption>
+            </figure>
           </div>
+
+          <p>
+            Disease mapping across clusters in the hippocampus indicates that AD pathology is not organized along a continuous progression axis. Instead, clusters can be stratified into discrete disease-associated and low-pathology states based on AD enrichment and Braak score. While some clusters show higher pathology burden than others, these states do not form a consistent global ordering across the manifold. Neither AD fraction nor Braak score displays a coherent monotonic progression, and disease-associated clusters are distributed across multiple disconnected regions of the PAGA graph. Together, these results indicate that disease progression in HC is not represented as a single global trajectory in transcriptional space, but rather as a set of spatially separated, pathology-associated states.
+          </p>
         </div>
 
         <div class="step">
           <div class="step-top">
             <div>
-              <h3>Step 3–4. Structure validation and model choice</h3>
+              <h3>Step 3–4. Structure Validation and Model Choice</h3>
               <p class="lead">HC was repeatedly re-checked with multiple roots and local branches to test the trajectory hypothesis.</p>
             </div>
-            <div class="badge">strong falsification block</div>
+            <div class="badge">DPT</div>
           </div>
+
           <div class="grid2">
-            <figure><img src="assets/HC_paga.png" alt="HC PAGA"><figcaption>PAGA topology: branch-like and fragmented.</figcaption></figure>
-            <figure><img src="assets/HC_trajectory_branch4.png" alt="HC branch"><figcaption>Local branch test within HC.</figcaption></figure>
+            <figure>
+              <img src="assets/HC_trajectory_dpt_root21.png" alt="HC root 21">
+              <figcaption>Root Sensitivity Example (Root Cluster 21)</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/HC_trajectory_dpt_root6.png" alt="HC root 6">
+              <figcaption>Root Sensitivity Example (Root Cluster 6)</figcaption>
+            </figure>
           </div>
-          <div class="grid4" style="margin-top:14px">
-            <figure><img src="assets/HC_trajectory_dpt_root10.png" alt="HC root 10"><figcaption>DPT with root 10.</figcaption></figure>
-            <figure><img src="assets/HC_trajectory_dpt_root23.png" alt="HC root 23"><figcaption>DPT with root 23.</figcaption></figure>
-            <figure><img src="assets/HC_trajectory_dpt_branch.png" alt="HC branch dpt"><figcaption>Branch DPT against pathology.</figcaption></figure>
-            <figure><img src="assets/HC_trajectory_exc_desease_states.png" alt="HC exc states"><figcaption>Exc-specific disease-state structure.</figcaption></figure>
+
+          <div style="margin-top:14px;">
+            <figure>
+              <img src="assets/HC_trajectory_dpt_branch.png" alt="HC branch dpt">
+              <figcaption>DPT Local Branch 10 → 18 → 16 (Root 10) Testing</figcaption>
+            </figure>
+
+            <figure style="margin-top:14px;">
+              <img src="assets/HC_trajectory_dpt_branch2.png" alt="HC branch dpt2">
+              <figcaption>DPT Local Branch 10 → 18 → 16 (Root 18) Testing</figcaption>
+            </figure>
           </div>
-          <div class="callout"><b>HC conclusion:</b> Neither global nor local analyses support one stable trajectory. HC is best interpreted through discrete states and localized excitatory-neuron dynamics.</div>
+
+          <p>
+            To determine whether disease organization in the hippocampus follows a continuous trajectory or a discrete state-based structure, we performed targeted analyses of locally connected PAGA branches. We examined two representative modules:<br>
+            <b>Vasc/Epithelia branch</b> (clusters 10–18–16) with moderate variation in pathology<br>
+            <b>Oligodendrocyte branch</b> (clusters 0–9–1–24) representing a large, coherent cell population<br>
+            For each branch, diffusion pseudotime (DPT) was computed using alternative root clusters to assess robustness.<br>
+            In the Vasc/Epithelia branch, pseudotime showed weak and inconsistent correlation with Braak stage (Spearman ρ ≈ 0.08 and −0.24), and its structure was highly dependent on root choice, indicating instability and lack of a meaningful progression axis.<br>
+            In the oligodendrocyte branch, pseudotime appeared stable across roots but showed no association with pathology (ρ ≈ 0.05). The inferred ordering reflected spatial structure in the embedding rather than biologically relevant progression.<br>
+            Across both branches, Braak stage and AD diagnosis remained heterogeneous and did not align with pseudotime gradients. We found no evidence for either global or local continuous trajectories in HC. Instead, the data consistently support a state-based model, where disease-associated variation is captured by discrete transcriptional states rather than a unified progression axis.
+          </p>
         </div>
 
         <div class="step">
           <div class="step-top">
             <div>
-              <h3>Step 5–7. Disease states, drivers, and cell-type interpretation</h3>
+              <h3>Step 5–7. Disease-Associated States, Candidate Drivers and Cell-Type Interpretation</h3>
               <p class="lead">Driver analysis was performed globally and then refined in excitatory neurons to separate composition effects from state-specific signal.</p>
             </div>
             <div class="badge">global + Exc-specific</div>
           </div>
-          <div class="grid2">
-            <figure><img src="assets/HC_cell_type_composition.png" alt="HC celltype composition"><figcaption>Cell-type composition across HC disease states.</figcaption></figure>
-            <figure><img src="assets/HC_trajectory_exc_core_genes_umap.png" alt="HC Exc genes"><figcaption>Exc-specific candidate drivers on UMAP.</figcaption></figure>
+
+          <figure>
+            <img src="assets/HC_disease_states.png" alt="HC disease states">
+            <figcaption>Disease-Associated Signals Across the HC Manifold</figcaption>
+          </figure>
+
+          <p>
+            To characterize disease-associated transcriptional changes in HC, we defined discrete cellular states based on clusters enriched for low and high pathological burden.
+          </p>
+          <p>
+            Clusters with low AD prevalence and low Braak stage were assigned as low_pathology, while clusters enriched for AD and higher Braak stages were labeled as high_pathology. Remaining clusters were classified as intermediate.
+          </p>
+          <p>
+            This classification was supported by clear differences in pathological burden across states: low_pathology cells exhibited minimal AD enrichment and lower Braak stages, whereas high_pathology cells showed increased AD prevalence and higher Braak scores.
+          </p>
+          <p>
+            Importantly, disease-associated states were strongly associated with cell-type composition. Low_pathology states were predominantly composed of vascular and epithelial cells, whereas high_pathology states were enriched for excitatory neurons and astrocytes, indicating that disease-associated transcriptional programs are cell-type specific. Projection of disease states onto the PAGA graph revealed that these states are not arranged along a continuous trajectory. Instead, low- and high-pathology clusters occupy distinct regions of the graph, with no clear transitional path connecting them.
+          </p>
+
+          <div class="grid2" style="margin-top:14px">
+            <figure>
+              <img src="assets/HC_drivers_high_low.png" alt="HC DE genes high low">
+              <figcaption>HC Global High-Pathology–Associated Genes (DE: High vs Low)</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/HC_drivers_high_low_dotplot.png" alt="HC High-Pathology–Associated Genes dotplot">
+              <figcaption>High-Pathology–Associated Genes in HC (DE: High vs Low)</figcaption>
+            </figure>
           </div>
-          <div class="grid3" style="margin-top:14px">
-            <figure><img src="assets/HC_drivers_global_high_low.png" alt="HC global drivers"><figcaption>Global high vs low pathology drivers.</figcaption></figure>
-            <figure><img src="assets/HC_drivers_exc_de_high_low_dotplot.png" alt="HC Exc dotplot"><figcaption>Exc-specific high vs low pathology dotplot.</figcaption></figure>
-            <figure><img src="assets/HC_drivers_high_low_heatmap.png" alt="HC driver heatmap"><figcaption>HC driver heatmap across disease states.</figcaption></figure>
+
+          <div class="grid2" style="margin-top:14px">
+            <figure>
+              <img src="assets/HC_drivers_exc_high_dotplot.png" alt="HC Exc high">
+              <figcaption>HC Exc High-Pathology Genes</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/HC_drivers_exc_low.png" alt="HC Exc low">
+              <figcaption>HC Exc Low-Pathology Genes</figcaption>
+            </figure>
+          </div>
+
+          <div style="margin-top:14px">
+            <figure>
+              <img src="assets/HC_cell_type_composition.png" alt="HC cell-type" style="width:600px;">
+              <figcaption>HC cell-type composition</figcaption>
+            </figure>
+          </div>
+
+          <p>
+            <b>Cell-type-specific analysis (Excitatory neurons)</b><br>
+            To isolate true disease-associated transcriptional changes, we performed the same analysis within excitatory neurons. This revealed a distinct set of genes upregulated in high_pathology Exc cells, including PTPRD, PLCG2, CHRM3, EFNA5, SORCS1, and MEF2C, which are associated with synaptic signaling, neuronal plasticity, and neurodegenerative processes. In contrast, genes upregulated in low_pathology Exc cells were enriched for more homeostatic and regulatory functions. Importantly, expression of high_pathology-associated genes showed a graded pattern across disease states (low → intermediate → high), indicating progressive activation rather than binary switching.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 8. Exc-only DPT + Core Genes Behavior Alongside Pseudotime (optional)</h3>
+              <p class="lead">To test whether a progression-like structure becomes clearer within the dominant HC cell type, we repeated DPT analysis in excitatory neurons and examined the spatial behavior of Exc-associated genes.</p>
+            </div>
+            <div class="badge">Exc-only DPT</div>
+          </div>
+
+          <div>
+            <figure>
+              <img src="assets/HC_trajectory_exc_desease_states.png" alt="HC Exc disease states">
+              <figcaption>Exc-only UMAP with Cluster, Disease-State, and Braak Overlays</figcaption>
+            </figure>
+
+            <figure style="margin-top:14px;">
+              <img src="assets/HC_trajectory_exc_dpt_desease_state_umap.png" alt="DPT Pseudotime with Disease-State">
+              <figcaption>Exc-only DPT Pseudotime with Disease-State and Braak Overlays</figcaption>
+            </figure>
+
+            <figure style="margin-top:14px;">
+              <img src="assets/HC_trajectory_exc_core_genes_umap.png" alt="Exc-associated genes">
+              <figcaption>Spatial Localization of Exc-Associated Genes Across the HC Manifold</figcaption>
+            </figure>
           </div>
         </div>
 
         <div class="step">
           <div class="step-top">
             <div>
-              <h3>Step 9–10. Gene programs and module scoring</h3>
-              <p class="lead">HC programs emphasize synaptic remodeling, axon guidance, and stress responses, especially within excitatory cells.</p>
+              <h3>Step 9–10. Gene Programs and Module Scoring (Exc-focused)</h3>
+              <p>
+                Gene program analysis in excitatory neurons revealed a clear separation between disease-associated and homeostatic transcriptional states.
+              </p>
+              <p>
+                High-pathology excitatory neurons were enriched for programs related to neuronal structural remodeling, including axonogenesis, synaptic adhesion, and cytoskeletal dynamics. These were accompanied by activation of stress-response pathways, including HSF1-mediated transcription and chaperone-mediated autophagy, as well as pathways directly linked to Alzheimer’s disease pathology, such as regulation of amyloid-beta formation and tau kinase activity.
+              </p>
+              <p>
+                In contrast, low-pathology excitatory neurons were enriched for transcriptional regulatory programs, including RNA polymerase activity, chromatin remodeling, and key regulatory pathways involving TP53, MECP2, and PTEN, reflecting a homeostatic neuronal state.
+              </p>
+              <p>
+                Together, these results support a model in which excitatory neurons in the hippocampus transition between discrete transcriptional states characterized by either homeostatic regulation or disease-associated structural remodeling and stress responses.
+              </p>
             </div>
             <div class="badge">Exc-focused programs</div>
           </div>
-          <div class="grid3">
-            <figure><img src="assets/HC_program_module_scores.png" alt="HC module scores"><figcaption>Mean module scores across disease states.</figcaption></figure>
-            <figure><img src="assets/HC_program_umap.png" alt="HC program umap"><figcaption>Program localization on HC UMAP.</figcaption></figure>
-            <figure><img src="assets/HC_program_violin.png" alt="HC program violin"><figcaption>Program-score distributions by disease state.</figcaption></figure>
-          </div>
+
+          <figure>
+            <img src="assets/HC_program_umap.png" alt="HC program scores">
+            <figcaption>Exc-only Gene Program Scores Across the HC Manifold</figcaption>
+          </figure>
+
+          <figure style="margin-top:14px">
+            <img src="assets/HC_program_violin.png" alt="HC module scores violin">
+            <figcaption>Exc Gene Program Scores Across Disease States (HC)</figcaption>
+          </figure>
+
+          <figure style="margin-top:14px">
+            <img src="assets/HC_program_module_scores.png" alt="HC module scores" style="width:600px;">
+            <figcaption>Mean Module Scores Across States</figcaption>
+          </figure>
         </div>
+
       </div>
     </section>
 
@@ -520,78 +862,205 @@
         </div>
         <div class="badge">Detailed regional report</div>
       </div>
+
       <div class="region-body">
+
         <div class="step">
           <div class="step-top">
             <div>
-              <h3>Step 1–2. Unsupervised landscape and disease mapping</h3>
+              <h3>Step 1–2. Unsupervised Landscape and Disease Mapping</h3>
               <p class="lead">PFC displays clear island-like topology, with pathology occupying discrete transcriptional regions.</p>
             </div>
-            <div class="badge">island-like manifold</div>
+            <div class="badge">UMAP · PAGA · pathology</div>
           </div>
-          <div class="grid3">
-            <figure><img src="assets/PFC_umap_clusters.png" alt="PFC clusters"><figcaption>Regional cluster structure.</figcaption></figure>
-            <figure><img src="assets/PFC_umap_pathology.png" alt="PFC pathology"><figcaption>AD/Braak overlay across PFC.</figcaption></figure>
-            <figure><img src="assets/PFC_disease_associated_states.png" alt="PFC disease states"><figcaption>Low / intermediate / high pathology states.</figcaption></figure>
-          </div>
-        </div>
 
-        <div class="step">
-          <div class="step-top">
-            <div>
-              <h3>Step 3–4. Structure validation and model choice</h3>
-              <p class="lead">CellRank and topology checks were used as negative tests for a trajectory model.</p>
-            </div>
-            <div class="badge">CellRank negative control</div>
-          </div>
           <div class="grid2">
-            <figure><img src="assets/PFC_paga.png" alt="PFC PAGA"><figcaption>PFC PAGA topology under pathology mapping.</figcaption></figure>
-            <figure><img src="assets/PFC_trajectory_cellrank_distribution.png" alt="PFC CellRank distribution"><figcaption>Fate-probability distribution across pathology.</figcaption></figure>
+            <figure>
+              <img src="assets/PFC_umap_clusters.png" alt="PFC clusters">
+              <figcaption>Regional Cluster Structure</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/PFC_disease_associated_states.png" alt="PFC disease states">
+              <figcaption>Low / Intermediate / High Pathology States</figcaption>
+            </figure>
           </div>
+
+          <figure style="margin-top:14px;">
+            <img src="assets/PFC_umap_pathology.png" alt="PFC pathology">
+            <figcaption>AD/Braak Overlay Across PFC</figcaption>
+          </figure>
+
           <div class="grid2" style="margin-top:14px">
-            <figure><img src="assets/PFC_trajectory_cellrank_high.png" alt="PFC CellRank high"><figcaption>High-pathology fate map.</figcaption></figure>
-            <figure><img src="assets/PFC_trajectory_cellrank_low.png" alt="PFC CellRank low"><figcaption>Low-pathology fate map.</figcaption></figure>
+            <figure>
+              <img src="assets/PFC_paga.png" alt="PFC PAGA">
+              <figcaption>PFC PAGA Threshold 0.15</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/PFC_paga_ad_fraction.png" alt="PFC PAGA AD fraction" style="width:630px;">
+              <figcaption>PFC PAGA AD Fraction</figcaption>
+            </figure>
           </div>
-          <div class="callout"><b>PFC conclusion:</b> PFC does not support directed progression. The dominant pattern is a switch-like activation of high-pathology states and programs.</div>
+
+          <p>
+            AD pathology shows a heterogeneous distribution across transcriptional states in the PFC. Clusters 0 and 13 show the strongest disease association and are oligodendrocyte-dominated, indicating strong involvement of oligodendrocyte states. Several additional clusters display moderate pathology and are primarily excitatory neurons, while others show lower AD burden, representing earlier or less affected states. Most clusters are highly cell-type-specific, suggesting that disease-associated states largely align with canonical cell types.
+          </p>
         </div>
 
         <div class="step">
           <div class="step-top">
             <div>
-              <h3>Step 5–7. Disease states, drivers, and cell-type interpretation</h3>
-              <p class="lead">High pathology in PFC is characterized by sharply activated genes and distinct cell-type composition shifts.</p>
+              <h3>Step 3–4. Structure Validation and Model Choice</h3>
+            </div>
+
+            <div>
+              <p>
+                PFC does not show a continuous progression structure. Pathology is unevenly distributed across clusters and does not follow a coherent trajectory in the PAGA graph.
+              </p>
+
+              <p>
+                High-pathology clusters form localized branches, while others are scattered without a clear gradient.
+              </p>
+
+              <p style="margin-top:10px; font-weight:500;">
+                Conclusion: PFC represents a multi-state landscape rather than a trajectory.
+              </p>
+
+              <p style="margin-top:10px;">
+                <b>Model choice:</b> State-based framework was selected. Analysis focuses on discrete disease-associated states rather than pseudotime trajectories.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 5–7. Disease-Associated States, Candidate Drivers and Cell-Type Interpretation</h3>
+              <p>High-pathology states: 0, 13<br>
+                 Low-pathology states: 2, 3, 7, 12, 24</p>
             </div>
             <div class="badge">state-specific drivers</div>
           </div>
+
+          <figure>
+            <img src="assets/PFC_disease_state_braak.png" alt="PFC state braak">
+            <figcaption>Disease-State and Braak Summary Panel</figcaption>
+          </figure>
+
           <div class="grid2">
-            <figure><img src="assets/PFC_cell_type_composition.png" alt="PFC celltype composition"><figcaption>Cell-type composition across PFC disease states.</figcaption></figure>
-            <figure><img src="assets/PFC_disease_state_braak.png" alt="PFC state braak"><figcaption>Disease-state and Braak summary panel.</figcaption></figure>
+            <figure>
+              <img src="assets/PFC_drivers_high_low.png" alt="PFC low high">
+              <figcaption>PFC Global High-Pathology–Associated Genes (DE: High vs Low)</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/PFC_drivers_high_low_dotplot.png" alt="PFC DE high low">
+              <figcaption>DE Genes: High vs Low Pathology (PFC)</figcaption>
+            </figure>
           </div>
-          <div class="grid3" style="margin-top:14px">
-            <figure><img src="assets/PFC_drivers_high_low_dotplot.png" alt="PFC dotplot"><figcaption>Genes upregulated in high pathology.</figcaption></figure>
-            <figure><img src="assets/PFC_drivers_core_genes_heatmap.png" alt="PFC heatmap"><figcaption>Core pathology-associated gene heatmap.</figcaption></figure>
-            <figure><img src="assets/PFC_drivers_violin.png" alt="PFC driver violin"><figcaption>Representative gene distributions across states.</figcaption></figure>
+
+          <figure>
+            <img src="assets/PFC_drivers_high_low_heatmap.png" alt="PFC DE high low heatmap" style="width:500px;">
+            <figcaption>Heatmap of High-Pathology Upregulated Genes Across Disease States</figcaption>
+          </figure>
+
+          <p>
+            Differential expression analysis between high- and low-pathology states identified a robust set of genes upregulated in high-pathology states, including CTNNA3, ST18, PIP4K2A, MBP, SLC44A1, RNF220, PLP1 and ELMO1. These genes showed strong enrichment in high-pathology states and were consistently visualized across dotplot and heatmap analyses.
+          </p>
+          <p>
+            Additional correlation analysis with Braak stage revealed that several of these genes, including ST18, PLP1, ENPP2, DOCK5, SLC24A2, C10orf90, and FRMD4B, also increased with pathological burden, supporting their relevance as candidate pathology-associated drivers.
+          </p>
+          <p>
+            Overall, the PFC high-pathology states are characterized by a strong oligodendrocyte-enriched transcriptional program, suggesting that AD-related variation in this region is associated with cell-type-resolved molecular remodeling rather than a single global trajectory.
+          </p>
+
+          <div class="grid2">
+            <figure>
+              <img src="assets/PFC_drivers_core_genes_high_low_dotplot.png" alt="PFC DE high low dotplot">
+              <figcaption>Core Candidate Drivers (DE ∩ Braak)</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/PFC_drivers_core_genes_heatmap.png" alt="PFC DE high low heatmap">
+              <figcaption>Core Candidate Drivers (DE ∩ Braak)</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/PFC_cell_type_composition.png" alt="PFC cell type composition">
+              <figcaption>PFC cell-type composition</figcaption>
+            </figure>
           </div>
         </div>
 
         <div class="step">
           <div class="step-top">
             <div>
-              <h3>Step 9–10. Gene programs and module scoring</h3>
-              <p class="lead">PFC programs strongly emphasize myelination, axon-related processes, migration, and signaling in high pathology.</p>
+              <h3>Step 8. CellRank Check (optional)</h3>
+              <p class="lead">CellRank was used as an additional directionality check to test whether PFC supports a stable transition from low- to high-pathology states.</p>
+            </div>
+            <div class="badge">CellRank</div>
+          </div>
+
+          <div class="grid3">
+            <figure>
+              <img src="assets/PFC_trajectory_cellrank_high.png" alt="PFC High-Pathology Fate">
+              <figcaption>PFC High-Pathology Fate</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/PFC_trajectory_cellrank_low.png" alt="PFC Low-Pathology Fate">
+              <figcaption>PFC Low-Pathology Fate</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/PFC_trajectory_cellrank_distribution.png" alt="Distribution of Fate Probabilities Across Braak Stages" style="width:320px;">
+              <figcaption>Distribution of Fate Probabilities Across Braak Stages</figcaption>
+            </figure>
+          </div>
+
+          <p>
+            Distribution of fate probabilities across Braak stages revealed no systematic increase with pathological burden. Median and overall distributions remained comparable across all stages, indicating the absence of a monotonic relationship between inferred fate probabilities and disease progression.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-top">
+            <div>
+              <h3>Step 9–10. Gene Programs and Module Scoring</h3>
+              <p class="lead">PFC programs strongly emphasize myelination, axon-related processes, migration and signaling in high pathology.</p>
             </div>
             <div class="badge">switch-like programs</div>
           </div>
-          <div class="grid3">
-            <figure><img src="assets/PFC_program_GO.png" alt="PFC GO"><figcaption>GO enrichment of high-pathology genes.</figcaption></figure>
-            <figure><img src="assets/PFC_program_module_scores.png" alt="PFC module scores"><figcaption>Module-score heatmap across disease states.</figcaption></figure>
-            <figure><img src="assets/PFC_program_score_umap.png" alt="PFC program umap"><figcaption>Program localization on PFC UMAP.</figcaption></figure>
+
+          <div class="grid2">
+            <figure>
+              <img src="assets/PFC_program_GO.png" alt="GO Enrichment of High-Pathology Upregulated Genes in PFC">
+              <figcaption>GO Enrichment of High-Pathology Upregulated Genes in PFC</figcaption>
+            </figure>
+
+            <figure>
+              <img src="assets/PFC_program_module_scores.png" alt="Mean Module Scores Across States">
+              <figcaption>Mean Module Scores Across States</figcaption>
+            </figure>
           </div>
-          <div class="grid2" style="margin-top:14px">
-            <figure><img src="assets/PFC_program_violin.png" alt="PFC program violin"><figcaption>Program-score distributions across disease states.</figcaption></figure>
-            <figure><img src="assets/PFC_drivers_high_low.png" alt="PFC high low"><figcaption>Global high vs low pathology driver summary.</figcaption></figure>
-          </div>
+
+          <figure style="margin-top:14px;">
+            <img src="assets/PFC_program_score_umap.png" alt="Program Localization on UMAP">
+            <figcaption>Program Localization on UMAP</figcaption>
+          </figure>
+
+          <figure style="margin-top:14px;">
+            <img src="assets/PFC_program_violin.png" alt="Program-Score Distributions Across States">
+            <figcaption>Program-Score Distributions Across States</figcaption>
+          </figure>
+
+          <p>
+            Gene program dynamics revealed a coordinated and abrupt activation of multiple transcriptional programs in high-pathology states. All programs, including myelination, cytoskeletal remodeling, axonal, and signaling modules, showed low and comparable activity in both low- and intermediate-pathology states, followed by a sharp increase specifically in high-pathology cells. This pattern is inconsistent with a gradual or sequential activation of programs along a continuous trajectory. Instead, it indicates a synchronized, switch-like transition into a distinct pathological state.
+          </p>
         </div>
+
       </div>
     </section>
 
@@ -606,6 +1075,7 @@
         </div>
         <div class="badge">Final synthesis</div>
       </div>
+
       <div class="region-body">
         <div class="step" style="margin-bottom:0">
           <div class="step-top">
@@ -615,6 +1085,7 @@
             </div>
             <div class="badge">EC vs HC vs PFC</div>
           </div>
+
           <table>
             <thead>
               <tr>
@@ -663,6 +1134,7 @@
               </tr>
             </tbody>
           </table>
+
           <div class="callout" style="margin-top:14px">
             <b>Final project conclusion:</b> the original hypothesis that AD develops through global or local transcriptional trajectories was not supported.
             Instead, the data consistently support <b>region-specific, discrete disease-associated states</b>, each with characteristic cell-type composition
@@ -677,10 +1149,5 @@
       You can edit the page later by changing the HTML text, replacing images in <b>assets/</b>, or editing directly on GitHub.
     </div>
   </main>
-
-  <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { primaryColor: '#f8fbff', primaryBorderColor:'#dde5ef', primaryTextColor:'#16202a', lineColor:'#7f8ea3', fontFamily:'Inter, system-ui, sans-serif' }});
-  </script>
 </body>
 </html>
